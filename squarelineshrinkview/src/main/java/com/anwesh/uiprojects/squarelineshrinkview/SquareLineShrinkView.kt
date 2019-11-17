@@ -21,29 +21,33 @@ val foreColor : Int = Color.parseColor("#0D47A1")
 val backColor : Int = Color.parseColor("#BDBDBD")
 val delay : Long = 30
 val scGap : Float = 0.02f
+val rSizeFactor : Float = 2.5f
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
 fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 fun Float.sinify() : Float = Math.sin(Math.PI * this).toFloat()
-fun Float.cosify() : Float = 1f - Math.cos(Math.PI / 2 + (Math.PI / 2) * this).toFloat()
+fun Float.cosify() : Float = Math.sin(Math.PI / 2 + (Math.PI / 2) * this).toFloat()
 
 fun Canvas.drawSquareLineShrink(i : Int, scale : Float, size : Float, paint : Paint) {
     val sc : Float = scale.divideScale(i, squares)
     val sf : Float = sc.sinify()
-    val sfc : Float = sc.divideScale(0, 2).cosify()
+    val sfc : Float = sc.divideScale(1, 2).cosify()
+    val rSize : Float = size / (2 * rSizeFactor)
+    val pos : Float = size - size / (2 * rSizeFactor)
+    val rpos : Float = pos * sfc
     save()
     rotate(90f * i)
-    drawLine(0f, 0f, size * sf, size * sf, paint)
+    drawLine(0f, 0f, pos * sf, pos * sf, paint)
     save()
-    translate((size / 2) * sfc, (size / 2) * sfc)
-    drawRect(RectF(-size / 4, -size / 4, size / 4, size / 4), paint)
+    translate(rpos, rpos)
+    drawRect(RectF(-rSize, -rSize, rSize, rSize), paint)
     restore()
     restore()
 }
 
 fun Canvas.drawSquaresLineShrink(scale : Float, size : Float, paint : Paint) {
-    for (j in 0..squares) {
+    for (j in 0..squares - 1) {
         drawSquareLineShrink(j, scale, size, paint)
     }
 }
