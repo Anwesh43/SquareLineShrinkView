@@ -215,4 +215,13 @@ class SquareLineShrinkView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : SquareLineShrinkView {
+            val view : SquareLineShrinkView = SquareLineShrinkView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
