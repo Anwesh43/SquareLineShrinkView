@@ -188,8 +188,30 @@ class SquareLineShrinkView(ctx : Context) : View(ctx) {
             }
         }
 
-        fun starttUpdating(cb : () -> Unit) {
+        fun startUpdating(cb : () -> Unit) {
             curr.startUpdating(cb)
+        }
+    }
+
+    data class Renderer(var view : SquareLineShrinkView) {
+
+        private val animator : Animator = Animator(view)
+        private val sls : SquareLineShrink = SquareLineShrink(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            sls.draw(canvas, paint)
+            animator.animate {
+                sls.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            sls.startUpdating {
+                animator.start()
+            }
         }
     }
 }
